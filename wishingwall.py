@@ -37,6 +37,7 @@ async def on_message(message):
             await message.delete()
         else:
             await message.add_reaction('\U0001F44E')
-            await message.channel.send('You wish for the impossible.')
+            msg = '{} WISHES FOR THE IMPOSSIBLE'.format(message.author.mention))
+            await message.channel.send(msg)
 
 client.run(config['token'])
