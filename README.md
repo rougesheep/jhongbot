@@ -19,3 +19,10 @@ Add your bot token to `config.json`
 ```
 python .\wishingwall.py
 ```
+
+## ToDo
+
+* rewrite using `@command` decorator
+* do proper logging instead of stdout
+* maybe daemonise it?
+* rename?
