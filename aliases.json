@@ -20,5 +20,8 @@
     "heads": "12",
     "flawless": "13",
     "petra": "13",
-    "labs": "niobe"
+    "labs": "niobe",
+    "nightfalls": "nightfall",
+    "speedrun": "nightfall",
+    "speedruns": "nightfall"
 }

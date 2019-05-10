@@ -72,5 +72,9 @@
     "niobe": {
         "message": "FOR SOMETHING ELSE ENTIRELY\nhttps://gamerant.com/destiny-2-niobe-labs-puzzle-how-to-beat/",
         "image_url": "https://cdn.gamerant.com/wp-content/uploads/Destiny-2-Black-Armory-Niobe-Labs-Symbol-Map.png"
+    },
+    "nightfall": {
+        "message": "FOR SPEED\n[clan.report](https://clan.report/compare-nightfalls?players=4%2F4611686018467227061%2C4%2F4611686018467226953%2C4%2F4611686018467306657%2C4%2F4611686018467858380%2C4%2F4611686018467697613)",
+        "image_url": "https://media1.giphy.com/media/5ZTPDAAS4u8lW/giphy.gif"
     }
 }
