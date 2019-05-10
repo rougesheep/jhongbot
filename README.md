@@ -27,3 +27,10 @@ sudo apt install supervisor
 ln -s supervisor.conf /etc/supervisor/conf.d/wishwall.conf
 sudo systemctl restart supervisor
 ```
+
+## ToDo
+
+* rewrite using `@command` decorator
+* do proper logging instead of stdout
+* maybe daemonise it?
+* rename?
