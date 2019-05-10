@@ -19,3 +19,11 @@ Add your bot token to `config.json`
 ```
 python .\wishingwall.py
 ```
+
+Or run with supervisor
+
+```
+sudo apt install supervisor
+ln -s supervisor.conf /etc/supervisor/conf.d/wishwall.conf
+sudo systemctl restart supervisor
+```
