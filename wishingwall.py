@@ -2,6 +2,7 @@
 
 import discord
 import json
+import random
 
 with open('config.json') as f:
     config = json.load(f)
@@ -41,5 +42,9 @@ async def on_message(message):
             await message.add_reaction('\U0001F44E')
             msg = '{} WISHES FOR THE IMPOSSIBLE'.format(message.author.mention)
             await message.channel.send(msg)
-
+    elif message.content.startswith('!badluck'):
+        responses = ["Sorry {} you're out", "Bad luck {}", "Today just isn't {}'s day", "Maybe next time {}", " Get outta here {}", "To be honest I just don't like {}"]
+        response = random.choice(responses).format('Josh')
+        await message.channel.send(response)
+    
 client.run(config['token'])
