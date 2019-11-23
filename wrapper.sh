@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 
+cd "$(dirname "$0")"
+
 function start {
-    . ./venv/bin/activate
-    python3.7 -u wishingwall.py
-    # nohup python3.7 -u wishingwall.py > python.log 2>&1 &
-    # echo $! > python.pid
+    nohup python -u wishingwall.py > python.log 2>&1 &
+    echo $! > python.pid
 }
 
 function stop {
     kill $(cat python.pid) && rm -f python.pid
+}
+
+function daemon {
+    . ./venv/bin/activate
+    python -u jhongbot.py
 }
 
 case "$1" in
