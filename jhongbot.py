@@ -5,9 +5,9 @@ import random
 
 with open('config.json') as f:
     config = json.load(f)
-with open('wishes.json') as f:
+with open('data/wishes.json') as f:
     wishes = json.load(f)
-with open('aliases.json') as f:
+with open('data/aliases.json') as f:
     aliases = json.load(f)
 
 bad_reactions = [
@@ -38,6 +38,10 @@ async def hello(ctx):
     await ctx.send('Hello {}!'.format(ctx.author.mention))
 
 @bot.command()
+async def jhongbot(ctx):
+    await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
+
+@bot.command()
 async def wish(ctx, *msg: str):
     wish = ' '.join(msg)
     print('{} wished for {}'.format(ctx.author.name, wish))
@@ -46,11 +50,22 @@ async def wish(ctx, *msg: str):
     if wish == 'source':
         await ctx.send('Shamelessly stolen from https://idleanimation.com/last-wish-plates')
     elif wish in wishes:
-        msg = '{} WISHES {}'.format(ctx.author.mention, wishes[wish]['message'])
-        embed = discord.Embed(description=msg)
+        title = 'YOU WISH {}'.format(wishes[wish]['message'])
+        description = wishes[wish]['description']
+        embed = discord.Embed(title=title, description=description)
         embed.set_image(url=wishes[wish]['image_url'])
         await ctx.send(embed=embed)
     else:
         await ctx.message.add_reaction(random.choice(bad_reactions))
+
+@bot.command()
+async def niobe(ctx):
+    title = 'Niobe Labs puzzle'
+    img = 'https://i.imgur.com/qaPwWnZ.png'
+    embed = discord.Embed(title=title)
+    embed.set_image(url=img)
+    embed.add_field(name='Guide', value='https://gamerant.com/destiny-2-niobe-labs-puzzle-how-to-beat/', inline=False)
+    embed.add_field(name='Infographic', value='https://imgur.com/a/qQjV9zI', inline=False)
+    await ctx.send(embed=embed)
 
 bot.run(config['token'])
