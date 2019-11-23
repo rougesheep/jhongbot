@@ -6,18 +6,36 @@ Discord bot that links wishing wall solutions for The Last Wish raid in Destiny 
 
 Install Python 3
 
+Windows:
 ```
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-pip install -U discord.py
+pip install -r requirements.txt
 ```
 
-Add your bot token to `config.json`
+Linux/WSL:
+```
+python3 -m venv venv
+. ./venv/bin/activate
+pip install -r requirements.txt
+```
+
+Add your bot token to `config.json` and flag it as unchanged
+
+```
+git update-index --assume-unchanged config.json
+```
 
 ## Running
 
 ```
-python .\wishingwall.py
+python jhongbot.py
+```
+
+Or background it
+
+```
+./wrapper.sh daemon
 ```
 
 Or run with supervisor
