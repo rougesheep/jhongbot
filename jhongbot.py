@@ -1,6 +1,5 @@
-#!/usr/bin/env python3.7
-
 import discord
+from discord.ext import commands
 import json
 import random
 
@@ -11,40 +10,47 @@ with open('wishes.json') as f:
 with open('aliases.json') as f:
     aliases = json.load(f)
 
-client = discord.Client()
+bad_reactions = [
+    '\U0001F44E',
+    '\U0001F621',
+    '\U0001F4A9',
+    '\U0001F47A',
+    '\U0001F4A2',
+    '\U0001F4A5',
+    '\U0001F937',
+    '\U0001F438',
+    '\U0001F6AB',
+    '\U0000274C',
+    '\U00002049'
+]
 
-@client.event
+description = 'Jhongbot'
+
+bot = commands.Bot(command_prefix='!', description=description)
+
+@bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
+    print('------')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+@bot.command()
+async def hello(ctx):
+    await ctx.send('Hello {}!'.format(ctx.author.mention))
 
-    if message.content.startswith('!wishwall'):
-        msgs = message.content.split(' ', 1)
-        msgs.remove('!wishwall')
-        wish = msgs.pop(0)
-        print("{} - {}: {}".format(message.guild, message.author, wish))
-        if wish in aliases:
-            wish = aliases[wish]
-        if wish == 'source':
-            await message.channel.send('Shamelessly stolen from https://idleanimation.com/last-wish-plates')
-            await message.delete()
-        elif wish in wishes:
-            msg = '{} WISHES {}'.format(message.author.mention, wishes[wish]['message'])
-            embed = discord.Embed(description=msg)
-            embed.set_image(url=wishes[wish]['image_url'])
-            await message.channel.send(embed=embed)
-            await message.delete()
-        else:
-            await message.add_reaction('\U0001F44E')
-            msg = '{} WISHES FOR THE IMPOSSIBLE'.format(message.author.mention)
-            await message.channel.send(msg)
-    elif message.content.startswith('!badluck'):
-        responses = ["Sorry {} you're out", "Bad luck {}", "Today just isn't {}'s day", "Maybe next time {}", " Get outta here {}", "To be honest I just don't like {}"]
-        response = random.choice(responses).format('Josh')
-        await message.channel.send(response)
-    
-client.run(config['token'])
+@bot.command()
+async def wish(ctx, *msg: str):
+    wish = ' '.join(msg)
+    print('{} wished for {}'.format(ctx.author.name, wish))
+    if wish in aliases:
+        wish = aliases[wish]
+    if wish == 'source':
+        await ctx.send('Shamelessly stolen from https://idleanimation.com/last-wish-plates')
+    elif wish in wishes:
+        msg = '{} WISHES {}'.format(ctx.author.mention, wishes[wish]['message'])
+        embed = discord.Embed(description=msg)
+        embed.set_image(url=wishes[wish]['image_url'])
+        await ctx.send(embed=embed)
+    else:
+        await ctx.message.add_reaction(random.choice(bad_reactions))
+
+bot.run(config['token'])
