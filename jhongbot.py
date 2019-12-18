@@ -67,4 +67,12 @@ async def niobe(ctx):
     embed.add_field(name='Infographic', value='https://imgur.com/a/qQjV9zI', inline=False)
     await ctx.send(embed=embed)
 
+@bot.command()
+async def dawning(ctx):
+    title = 'Dawning Recipes'
+    img = 'https://i.imgur.com/nVMYk7R.png'
+    embed = discord.Embed(title=title)
+    embed.set_image(url=img)
+    await ctx.send(embed=embed)
+
 bot.run(config['token'])
