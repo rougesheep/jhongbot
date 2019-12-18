@@ -3,7 +3,8 @@
 cd "$(dirname "$0")"
 
 function start {
-    nohup python -u wishingwall.py > python.log 2>&1 &
+    . ./venv/bin/activate
+    nohup python -u jhongbot.py > python.log 2>&1 &
     echo $! > python.pid
 }
 
@@ -11,7 +12,7 @@ function stop {
     kill $(cat python.pid) && rm -f python.pid
 }
 
-function daemon {
+function foreground {
     . ./venv/bin/activate
     python -u jhongbot.py
 }

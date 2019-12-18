@@ -24,9 +24,7 @@ bad_reactions = [
     '\U00002049'
 ]
 
-description = 'Jhongbot'
-
-bot = commands.Bot(command_prefix='!', description=description)
+bot = commands.Bot(command_prefix='!', description='A pretty useless bot')
 
 @bot.event
 async def on_ready():
@@ -43,6 +41,7 @@ async def jhongbot(ctx):
 
 @bot.command()
 async def wish(ctx, *msg: str):
+    global bad_reactions
     wish = ' '.join(msg)
     print('{} wished for {}'.format(ctx.author.name, wish))
     if wish in aliases:
