@@ -32,11 +32,21 @@ async def on_ready():
     print('------')
 
 @bot.command()
+async def help(ctx):
+    title = "Commands"
+    embed = discord.Embed(title=title)
+    embed.add_field(name='!wish', value='Wish-wall diagrams for the Last Wish Raid.')
+    embed.add_field(name='!niobe', value='Guide for the Niobe Labs puzzle.')
+    embed.add_field(name='!dawning', value='Dawning oven recepes.')
+    embed.add_field(name='!github', value='Link to the GitHub page for this.')
+    await ctx.send(embed=embed)
+
+@bot.command()
 async def hello(ctx):
     await ctx.send('Hello {}!'.format(ctx.author.mention))
 
 @bot.command()
-async def jhongbot(ctx):
+async def github(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
 @bot.command()
