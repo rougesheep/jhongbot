@@ -31,15 +31,15 @@ async def on_ready():
     print('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
     print('------')
 
-@bot.command()
+@bot.command(hidden=True)
 async def hello(ctx):
     await ctx.send('Hello {}!'.format(ctx.author.mention))
 
-@bot.command()
+@bot.command(brief='Link to the GitHub page for this bot.')
 async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command()
+@bot.command(brief='Wish-wall solutions for the Last Wish Raid.')
 async def wish(ctx, *msg: str):
     global bad_reactions
     wish = ' '.join(msg)
@@ -57,7 +57,7 @@ async def wish(ctx, *msg: str):
     else:
         await ctx.message.add_reaction(random.choice(bad_reactions))
 
-@bot.command()
+@bot.command(brief='Guide for the Niobe Labs puzzle from Black Armoury.')
 async def niobe(ctx):
     title = 'Niobe Labs puzzle'
     img = 'https://i.imgur.com/qaPwWnZ.png'
@@ -67,7 +67,7 @@ async def niobe(ctx):
     embed.add_field(name='Infographic', value='https://imgur.com/a/qQjV9zI', inline=False)
     await ctx.send(embed=embed)
 
-@bot.command()
+@bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
     title = 'Dawning Recipes'
     img = 'https://i.imgur.com/nVMYk7R.png'
