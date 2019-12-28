@@ -3,6 +3,10 @@ from discord.ext import commands
 import json
 import random
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 with open('config.json') as f:
     config = json.load(f)
 with open('data/wishes.json') as f:
