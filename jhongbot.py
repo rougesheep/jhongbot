@@ -39,7 +39,7 @@ async def hello(ctx):
 async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command(brief='Wish-wall solutions for the Last Wish Raid.')
+@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall', 'riven'])
 async def wish(ctx, *msg: str):
     global bad_reactions
     wish = ' '.join(msg)
