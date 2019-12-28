@@ -24,7 +24,7 @@ bad_reactions = [
     '\U00002049'
 ]
 
-bot = commands.Bot(command_prefix='!', description='A pretty useless bot')
+bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
 async def on_ready():
