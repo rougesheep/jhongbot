@@ -5,7 +5,8 @@ import random
 
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
+logger = logging.getLogger('jhongbot')
 
 with open('config.json') as f:
     config = json.load(f)
@@ -32,22 +33,23 @@ bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
 async def on_ready():
-    print('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
-    print('------')
+    logger.info('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
 
 @bot.command(hidden=True)
 async def hello(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send('Hello {}!'.format(ctx.author.mention))
 
 @bot.command(brief='Link to the GitHub page for this bot.')
 async def jhongbot(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
 @bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall', 'riven'])
 async def wish(ctx, *msg: str):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     global bad_reactions
     wish = ' '.join(msg)
-    print('{} wished for {}'.format(ctx.author.name, wish))
     if wish in aliases:
         wish = aliases[wish]
     if wish == 'source':
@@ -63,6 +65,7 @@ async def wish(ctx, *msg: str):
 
 @bot.command(brief='Guide for the Niobe Labs puzzle from Black Armoury.')
 async def niobe(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Niobe Labs puzzle'
     img = 'https://i.imgur.com/qaPwWnZ.png'
     embed = discord.Embed(title=title)
@@ -73,6 +76,7 @@ async def niobe(ctx):
 
 @bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Dawning Recipes'
     img = 'https://i.imgur.com/nVMYk7R.png'
     embed = discord.Embed(title=title)
