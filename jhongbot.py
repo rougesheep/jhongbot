@@ -83,4 +83,22 @@ async def dawning(ctx):
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
+@bot.command(brief='Menagerie chalice combinations.', aliases=['menagerie'])
+async def chalice(ctx, msg=''):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    print(msg)
+    title = 'Chalice Combinations'
+    armour_img = 'https://i.imgur.com/6tdW1Fs.png'
+    weapon_img = 'https://i.imgur.com/EzOgjqy.png'
+    armour_embed = discord.Embed(title=title)
+    armour_embed.set_image(url=armour_img)
+    weapon_embed = discord.Embed(title=title)
+    weapon_embed.set_image(url=weapon_img)
+    if msg == 'armour':
+        await ctx.send(embed=armour_embed)
+    elif msg == 'weapons':
+        await ctx.send(embed=weapon_embed)
+    else:
+        await ctx.send('{} weapons or armour?'.format(ctx.author.mention))
+        
 bot.run(config['token'])
