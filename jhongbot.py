@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import json
 import random
+from datetime import datetime
 
 import logging
 
@@ -86,7 +87,6 @@ async def dawning(ctx):
 @bot.command(brief='Menagerie chalice combinations.', aliases=['menagerie'])
 async def chalice(ctx, msg=''):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    print(msg)
     title = 'Chalice Combinations'
     armour_img = 'https://i.imgur.com/6tdW1Fs.png'
     weapon_img = 'https://i.imgur.com/EzOgjqy.png'
@@ -100,5 +100,21 @@ async def chalice(ctx, msg=''):
         await ctx.send(embed=weapon_embed)
     else:
         await ctx.send('{} weapons or armour?'.format(ctx.author.mention))
+
+@bot.command(brief='Days before season end.')
+async def season(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+
+    season_name = 'Dawn'
+    season_end = datetime(2020, 3, 9, 17, 00)
+    now = datetime.now()
+
+    s = (season_end - now).total_seconds()
+    
+    days, r1 = divmod(s, 86400)
+    #hours, r2 = divmod(r1, 3600)
+
+    msg = "Season of {} ends in {:00} days".format(season_name, int(days))
+    await ctx.send(msg)
         
 bot.run(config['token'])
