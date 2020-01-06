@@ -30,6 +30,15 @@ bad_reactions = [
     '\U00002049'
 ]
 
+cat_reactions = [
+    '\U0001F408',
+    '\U0001F431',
+    '\U0001F63A',
+    '\U0001F63B',
+    '\U0001F638',
+    '\U0001F43E'
+]
+
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
@@ -116,5 +125,14 @@ async def season(ctx):
 
     msg = "Season of {} ends in {:00} days".format(season_name, int(days))
     await ctx.send(msg)
+
+@bot.command(hidden=True, aliases=['meow', 'nyan', 'cat', '🐈', '🐱'])
+async def poncho(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    title = random.choice(cat_reactions)
+    img = 'https://i.imgur.com/78sGyE2.png'
+    embed = discord.Embed(title=title)
+    embed.set_image(url=img)
+    await ctx.send(embed=embed)
         
 bot.run(config['token'])
