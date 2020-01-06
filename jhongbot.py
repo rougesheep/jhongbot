@@ -6,7 +6,12 @@ from datetime import datetime
 
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s: %(levelname)s: %(message)s',
+                    datefmt='%Y-%m-%d %H:%M',
+                    filename='jhongbot.log',
+                    filemode='a')
+
 logger = logging.getLogger('jhongbot')
 
 with open('config.json') as f:
