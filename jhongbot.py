@@ -120,7 +120,7 @@ async def season(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
 
     season_name = 'Dawn'
-    season_end = datetime(2020, 3, 9, 17, 00)
+    season_end = datetime(2020, 3, 10, 17, 00)
     now = datetime.now()
 
     s = (season_end - now).total_seconds()
