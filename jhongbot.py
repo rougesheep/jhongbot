@@ -126,9 +126,9 @@ async def season(ctx):
     s = (season_end - now).total_seconds()
     
     days, r1 = divmod(s, 86400)
-    #hours, r2 = divmod(r1, 3600)
+    hours, r2 = divmod(r1, 3600)
 
-    msg = "Season of {} ends in {:00} days".format(season_name, int(days))
+    msg = "Season of {} ends in {:00} days {} hours".format(season_name, int(days), int(hours))
     await ctx.send(msg)
 
 @bot.command(hidden=True, aliases=['meow', 'nyan', 'cat', '🐈', '🐱'])
