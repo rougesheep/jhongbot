@@ -139,5 +139,14 @@ async def poncho(ctx):
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
     await ctx.send(embed=embed)
+
+@bot.command()
+async def ding(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    title = 'Ding'
+    img = 'https://media.giphy.com/media/32681KwrcXqrFIpI0P/giphy.gif'
+    embed = discord.Embed(title=title)
+    embed.set_image(url=img)
+    await ctx.send(embed=embed)
         
 bot.run(config['token'])
