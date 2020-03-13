@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+import requests
 import random
 from datetime import datetime
 
@@ -43,6 +44,12 @@ cat_reactions = [
     '\U0001F638',
     '\U0001F43E'
 ]
+
+emoji = {
+    'tick':     '\U00002705',
+    'cross':    '\U0000274C',
+    'question': '\U00002753'
+}
 
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
@@ -147,6 +154,28 @@ async def ding(ctx):
     img = 'https://media.giphy.com/media/32681KwrcXqrFIpI0P/giphy.gif'
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
+    await ctx.send(embed=embed)
+
+@bot.command(aliases=['engrams'])
+async def vendors(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    uri = "https://api.vendorengrams.xyz/getVendorDrops"
+    r = requests.get(url=uri)
+    vendors = r.json()
+    msg_list = []
+    for vendor in vendors:
+        if vendor['display'] == '1':
+            if vendor['drop'] == '2':
+                yn = emoji['tick']
+            elif vendor['drop'] == '1':
+                yn = emoji['cross']
+            else:
+                yn = emoji['question']
+            msg_list.append("{}  {}".format(yn, vendor['shorthand'].capitalize()))
+    title = 'Vendor Engrams'
+    embed = discord.Embed(title=title)
+    embed.add_field(name='+0 Reward Engrams', value="\n".join(msg_list))
+    embed.set_footer(text='https://vendorengrams.xyz/')
     await ctx.send(embed=embed)
         
 bot.run(config['token'])
