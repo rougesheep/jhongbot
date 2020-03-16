@@ -162,17 +162,30 @@ async def vendors(ctx):
     uri = "https://api.vendorengrams.xyz/getVendorDrops"
     r = requests.get(url=uri)
     vendors = r.json()
+    vendor_names = {
+        'devrim': 'Devrim Kay',
+        'bray': 'Ana Bray',
+        'asher': 'Asher Mir',
+        'benedict': 'Benedict 99-40',
+        'failsafe': 'Failsafe',
+        'zavala': 'Zavala',
+        'shaxx': 'Shaxx',
+        'banshee': 'Banshee-44',
+        'werner': 'Werner 99-40',
+        'sloane': 'Sloane',
+        'fanboy': 'Brother Vance'
+    }
     good = []
     bad = []
     unknown = []
     for vendor in vendors:
         if vendor['display'] == '1':
             if vendor['drop'] == '2':
-                good.append(vendor['shorthand'].capitalize())
+                good.append(vendor_names[vendor['shorthand']])
             elif vendor['drop'] == '1':
-                bad.append(vendor['shorthand'].capitalize())
+                bad.append(vendor_names[vendor['shorthand']])
             else:
-                unknown.append(vendor['shorthand'].capitalize())
+                unknown.append(vendor_names[vendor['shorthand']])
     title = 'Vendor Engrams'
     embed = discord.Embed(title=title)
     embed.add_field(name='High', value="\n".join(good), inline=True)
