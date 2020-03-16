@@ -162,19 +162,22 @@ async def vendors(ctx):
     uri = "https://api.vendorengrams.xyz/getVendorDrops"
     r = requests.get(url=uri)
     vendors = r.json()
-    msg_list = []
+    good = []
+    bad = []
+    unknown = []
     for vendor in vendors:
         if vendor['display'] == '1':
             if vendor['drop'] == '2':
-                yn = emoji['tick']
+                good.append(vendor['shorthand'].capitalize())
             elif vendor['drop'] == '1':
-                yn = emoji['cross']
+                bad.append(vendor['shorthand'].capitalize())
             else:
-                yn = emoji['question']
-            msg_list.append("{}  {}".format(yn, vendor['shorthand'].capitalize()))
+                unknown.append(vendor['shorthand'].capitalize())
     title = 'Vendor Engrams'
     embed = discord.Embed(title=title)
-    embed.add_field(name='+0 Reward Engrams', value="\n".join(msg_list))
+    embed.add_field(name='High', value="\n".join(good), inline=True)
+    embed.add_field(name='Low', value="\n".join(bad), inline=True)
+    embed.add_field(name='Unknown', value="\n".join(unknown), inline=True)
     embed.set_footer(text='https://vendorengrams.xyz/')
     await ctx.send(embed=embed)
         
