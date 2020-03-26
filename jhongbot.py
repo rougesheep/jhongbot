@@ -173,7 +173,8 @@ async def vendors(ctx):
         'banshee': 'Banshee-44',
         'werner': 'Werner 99-40',
         'sloane': 'Sloane',
-        'fanboy': 'Brother Vance'
+        'fanboy': 'Brother Vance',
+        'saladin': 'Lord Saladin'
     }
     good = []
     bad = []
