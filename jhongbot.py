@@ -187,11 +187,15 @@ async def vendors(ctx):
                 bad.append(vendor_names[vendor['shorthand']])
             else:
                 unknown.append(vendor_names[vendor['shorthand']])
+    
     title = 'Vendor Engrams'
     embed = discord.Embed(title=title)
-    embed.add_field(name='High', value="\n".join(good), inline=True)
-    embed.add_field(name='Low', value="\n".join(bad), inline=True)
-    embed.add_field(name='Unknown', value="\n".join(unknown), inline=True)
+    if len(good) > 0:
+        embed.add_field(name='High', value="\n".join(good), inline=True)
+    if len(bad) > 0:
+        embed.add_field(name='Low', value="\n".join(bad), inline=True)
+    if len(unknown) > 0:
+        embed.add_field(name='Unknown', value="\n".join(unknown), inline=True)
     embed.set_footer(text='https://vendorengrams.xyz/')
     await ctx.send(embed=embed)
         
