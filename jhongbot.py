@@ -81,6 +81,7 @@ async def wish(ctx, *msg: str):
         description = wishes[wish]['description']
         embed = discord.Embed(title=title, description=description)
         embed.set_image(url=wishes[wish]['image_url'])
+        embed.set_footer(text='https://idleanimation.com/last-wish-plates')
         await ctx.send(embed=embed)
     else:
         await ctx.message.add_reaction(random.choice(bad_reactions))
