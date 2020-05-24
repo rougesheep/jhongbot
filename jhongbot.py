@@ -61,6 +61,15 @@ raids = [
     'Garden of Salvation'
 ]
 
+raid_lines = [
+    'How about {}?',
+    'Maybe {} this time?',
+    'You should do {}.',
+    '{}. My Favourite!',
+    'Just do {}.',
+    '{}.'
+]
+
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
@@ -213,6 +222,6 @@ async def vendors(ctx):
 @bot.command()
 async def raid(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    await ctx.send(random.choice(raids))
+    await ctx.send(random.choice(raid_lines).format(random.choice(raids)))
         
 bot.run(config['token'])
