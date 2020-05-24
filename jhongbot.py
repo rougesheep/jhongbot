@@ -51,6 +51,16 @@ emoji = {
     'question': '\U00002753'
 }
 
+raids = [
+    'Leviathan',
+    'Eater of Worlds',
+    'Spire of Stars',
+    'Last Wish',
+    'Scourge of the Past',
+    'Crown of Sorrow',
+    'Garden of Salvation'
+]
+
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
@@ -199,5 +209,10 @@ async def vendors(ctx):
         embed.add_field(name='Unknown', value="\n".join(unknown), inline=True)
     embed.set_footer(text='https://vendorengrams.xyz/')
     await ctx.send(embed=embed)
+
+@bot.command()
+async def raid(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    await ctx.send(random.choice(raids))
         
 bot.run(config['token'])
