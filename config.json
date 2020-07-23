@@ -1,3 +1,6 @@
 {
-    "token": ""
+    "token": "",
+    "abuseList": [
+        "bad.user"
+    ]
 }

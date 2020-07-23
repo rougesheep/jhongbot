@@ -21,6 +21,8 @@ with open('data/wishes.json') as f:
     wishes = json.load(f)
 with open('data/aliases.json') as f:
     aliases = json.load(f)
+with open('data/abuse.json') as f:
+    abuse = json.load(f)
 
 bad_reactions = [
     '\U0001F44E',
@@ -70,6 +72,12 @@ raid_lines = [
     '{}.'
 ]
 
+def isToBeAbused(username):
+    return username in config['abuseList']
+
+def getAbuse(username):
+    return random.choice(abuse).format(username)
+
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
 @bot.event
@@ -79,7 +87,11 @@ async def on_ready():
 @bot.command(hidden=True)
 async def hello(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    await ctx.send('Hello {}!'.format(ctx.author.mention))
+    if (isToBeAbused(ctx.author.name)):
+        message = getAbuse(ctx.author.mention)
+    else:
+        message = 'Hello {}!'.format(ctx.author.mention)
+    await ctx.send(message)
 
 @bot.command(brief='Link to the GitHub page for this bot.')
 async def jhongbot(ctx):
