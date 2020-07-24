@@ -87,7 +87,7 @@ async def on_ready():
 @bot.command(hidden=True)
 async def hello(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    if (isToBeAbused(ctx.author.name)):
+    if (isToBeAbused(str(ctx.author))):
         message = getAbuse(ctx.author.mention)
     else:
         message = 'Hello {}!'.format(ctx.author.mention)
