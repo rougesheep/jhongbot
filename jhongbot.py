@@ -98,7 +98,7 @@ async def jhongbot(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall', 'riven'])
+@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
 async def wish(ctx, *msg: str):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     global bad_reactions
@@ -235,5 +235,14 @@ async def vendors(ctx):
 async def raid(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send(random.choice(raid_lines).format(random.choice(raids)))
+
+@bot.command(aliases=['callouts', 'symbols'])
+async def riven(ctx):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    title = 'Riven Callouts'
+    img = 'https://i.imgur.com/Nxr4AO9.png'
+    embed = discord.Embed(title=title)
+    embed.set_image(url=img)
+    await ctx.send(embed=embed)
         
 bot.run(config['token'])
