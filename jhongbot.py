@@ -17,10 +17,6 @@ logger = logging.getLogger('jhongbot')
 
 with open('config.json') as f:
     config = json.load(f)
-with open('data/wishes.json') as f:
-    wishes = json.load(f)
-with open('data/aliases.json') as f:
-    aliases = json.load(f)
 with open('data/abuse.json') as f:
     abuse = json.load(f)
 
@@ -53,25 +49,6 @@ emoji = {
     'question': '\U00002753'
 }
 
-raids = [
-    'Leviathan',
-    'Eater of Worlds',
-    'Spire of Stars',
-    'Last Wish',
-    'Scourge of the Past',
-    'Crown of Sorrow',
-    'Garden of Salvation'
-]
-
-raid_lines = [
-    'How about {}?',
-    'Maybe {} this time?',
-    'You should do {}.',
-    '{}. My Favourite!',
-    'Just do {}.',
-    '{}.'
-]
-
 def isToBeAbused(username):
     return username in config['abuseList']
 
@@ -101,6 +78,12 @@ async def jhongbot(ctx):
 @bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
 async def wish(ctx, *msg: str):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+
+    with open('data/wishes.json') as f:
+        wishes = json.load(f)
+    with open('data/aliases.json') as f:
+        aliases = json.load(f)
+
     global bad_reactions
     wish = ' '.join(msg)
     if wish in aliases:
@@ -179,7 +162,7 @@ async def poncho(ctx):
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command()
+@bot.command(brief="DING")
 async def ding(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Ding'
@@ -188,7 +171,7 @@ async def ding(ctx):
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['engrams'])
+@bot.command(brief="Vendor Power Drops", aliases=['engrams'])
 async def vendors(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     uri = "https://api.vendorengrams.xyz/getVendorDrops"
@@ -231,12 +214,31 @@ async def vendors(ctx):
     embed.set_footer(text='https://vendorengrams.xyz/')
     await ctx.send(embed=embed)
 
-@bot.command()
+@bot.command(brief="Wheel of Fortune. But for raids.")
 async def raid(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+    raids = [
+        'Leviathan',
+        'Eater of Worlds',
+        'Spire of Stars',
+        'Last Wish',
+        'Scourge of the Past',
+        'Crown of Sorrow',
+        'Garden of Salvation'
+    ]
+
+    raid_lines = [
+        'How about {}?',
+        'Maybe {} this time?',
+        'You should do {}.',
+        '{}. My Favourite!',
+        'Just do {}.',
+        '{}.'
+    ]
+
     await ctx.send(random.choice(raid_lines).format(random.choice(raids)))
 
-@bot.command(aliases=['callouts', 'symbols'])
+@bot.command(brief="Callouts for symbols/positions in the Riven fight.", aliases=['callouts', 'symbols'])
 async def riven(ctx):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Riven Callouts'
@@ -244,5 +246,37 @@ async def riven(ctx):
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
     await ctx.send(embed=embed)
-        
+
+@bot.command(brief="Names are hard.", aliases=['name', 'roster'])
+async def whois(ctx, name=''):
+    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
+
+    with open('data/names.json') as f:
+        names = json.load(f)
+
+    if not name:
+        title='People'
+        embed = discord.Embed(title=title)
+        for person in names:
+            embed.add_field(name=person['steam'], value=person['name'])
+        await ctx.send(embed=embed)
+    else:
+        found = False
+        for person in names:
+            if name.lower() == person['name'].lower():
+                found = True
+                await ctx.send("{} is {}".format(person['name'], person['steam']))
+                exit
+            elif name.lower() == person['steam'].lower():
+                found = True
+                await ctx.send("{} is {}".format(person['steam'], person['name']))
+                exit
+        if not found:
+            fail_lines = [
+                "I don't know",
+                "Never heard of them",
+                "I only know about important people"
+            ]
+            await ctx.send(random.choice(fail_lines))
+
 bot.run(config['token'])
