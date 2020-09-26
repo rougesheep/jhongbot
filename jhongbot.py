@@ -4,6 +4,7 @@ import json
 import requests
 import random
 from datetime import datetime
+from pymongo import MongoClient
 
 import logging
 
@@ -48,6 +49,10 @@ emoji = {
     'cross':    '\U0000274C',
     'question': '\U00002753'
 }
+
+# initialise DB connection
+client = MongoClient(config['database'])
+db = client['jhongbot']
 
 def isToBeAbused(username):
     return username in config['abuseList']
@@ -247,36 +252,35 @@ async def riven(ctx):
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command(brief="Names are hard.", aliases=['name', 'roster'])
+@bot.command(brief="Names are hard.", aliases=['names', 'roster'])
 async def whois(ctx, name=''):
     logger.info('{} - {}'.format(ctx.author, ctx.message.content))
 
-    with open('data/names.json') as f:
-        names = json.load(f)
+    names = db['names']
 
     if not name:
         title='People'
         embed = discord.Embed(title=title)
-        for person in names:
+        for person in names.find({}):
             embed.add_field(name=person['steam'], value=person['name'])
         await ctx.send(embed=embed)
     else:
-        found = False
-        for person in names:
-            if name.lower() == person['name'].lower():
-                found = True
-                await ctx.send("{} is {}".format(person['name'], person['steam']))
-                exit
-            elif name.lower() == person['steam'].lower():
-                found = True
-                await ctx.send("{} is {}".format(person['steam'], person['name']))
-                exit
-        if not found:
+        name=name.lower()
+        match = []
+        for person in names.find({ $or: [ { name_lower: name}, { steam_lower: name }]}):
+            match.append(person)
+        if not match:
             fail_lines = [
                 "I don't know",
                 "Never heard of them",
                 "I only know about important people"
             ]
             await ctx.send(random.choice(fail_lines))
+        else:
+            title='People'
+            embed=discord.Embed(title=title)
+            for person in match:
+                embed.add_field(name=person['steam'], value=person['name'])
+            await ctx.send(embed=embed)
 
 bot.run(config['token'])
