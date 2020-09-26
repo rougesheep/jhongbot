@@ -261,13 +261,13 @@ async def whois(ctx, name=''):
     if not name:
         title='People'
         embed = discord.Embed(title=title)
-        for person in names.find({}):
+        for person in names.find({}).sort("steam_lower"):
             embed.add_field(name=person['steam'], value=person['name'])
         await ctx.send(embed=embed)
     else:
         name=name.lower()
         match = []
-        for person in names.find({ $or: [ { name_lower: name}, { steam_lower: name }]}):
+        for person in names.find({ "$or": [ { 'name_lower': name}, { 'steam_lower': name }]}):
             match.append(person)
         if not match:
             fail_lines = [
