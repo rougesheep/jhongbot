@@ -66,9 +66,17 @@ bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 async def on_ready():
     logger.info('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
 
+@bot.listen('on_message')
+async def history(message):
+    if message.author.id == bot.user.id:
+        return
+    
+    history = db['history']
+    record = { "user": message.author.name, "message": message.content, "timestamp": message.created_at }
+    history.insert(record)
+
 @bot.command(hidden=True)
 async def hello(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     if (isToBeAbused(str(ctx.author))):
         message = getAbuse(ctx.author.mention)
     else:
@@ -77,13 +85,10 @@ async def hello(ctx):
 
 @bot.command(brief='Link to the GitHub page for this bot.')
 async def jhongbot(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
 @bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
 async def wish(ctx, *msg: str):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
     with open('data/wishes.json') as f:
         wishes = json.load(f)
     with open('data/aliases.json') as f:
@@ -107,7 +112,6 @@ async def wish(ctx, *msg: str):
 
 @bot.command(brief='Guide for the Niobe Labs puzzle from Black Armoury.')
 async def niobe(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Niobe Labs puzzle'
     img = 'https://i.imgur.com/qaPwWnZ.png'
     embed = discord.Embed(title=title)
@@ -118,7 +122,6 @@ async def niobe(ctx):
 
 @bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Dawning Recipes'
     img = 'https://i.imgur.com/nVMYk7R.png'
     embed = discord.Embed(title=title)
@@ -127,7 +130,6 @@ async def dawning(ctx):
 
 @bot.command(brief='Menagerie chalice combinations.', aliases=['menagerie'])
 async def chalice(ctx, msg=''):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Chalice Combinations'
     armour_img = 'https://i.imgur.com/6tdW1Fs.png'
     weapon_img = 'https://i.imgur.com/EzOgjqy.png'
@@ -144,8 +146,6 @@ async def chalice(ctx, msg=''):
 
 @bot.command(brief='Days before season end.')
 async def season(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
     season_name = 'the Worthy'
     season_end = datetime(2020, 3, 10, 17, 00)
     now = datetime.now()
@@ -160,7 +160,6 @@ async def season(ctx):
 
 @bot.command(hidden=True, aliases=['meow', 'nyan', 'cat', '🐈', '🐱'])
 async def poncho(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = random.choice(cat_reactions)
     img = 'https://i.imgur.com/78sGyE2.png'
     embed = discord.Embed(title=title)
@@ -169,7 +168,6 @@ async def poncho(ctx):
 
 @bot.command(brief="DING")
 async def ding(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Ding'
     img = 'https://media.giphy.com/media/32681KwrcXqrFIpI0P/giphy.gif'
     embed = discord.Embed(title=title)
@@ -178,7 +176,6 @@ async def ding(ctx):
 
 @bot.command(brief="Vendor Power Drops", aliases=['engrams'])
 async def vendors(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     uri = "https://api.vendorengrams.xyz/getVendorDrops"
     r = requests.get(url=uri)
     vendors = r.json()
@@ -221,7 +218,6 @@ async def vendors(ctx):
 
 @bot.command(brief="Wheel of Fortune. But for raids.")
 async def raid(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     raids = [
         'Leviathan',
         'Eater of Worlds',
@@ -245,7 +241,6 @@ async def raid(ctx):
 
 @bot.command(brief="Callouts for symbols/positions in the Riven fight.", aliases=['callouts', 'symbols'])
 async def riven(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Riven Callouts'
     img = 'https://i.imgur.com/Nxr4AO9.png'
     embed = discord.Embed(title=title)
@@ -254,8 +249,6 @@ async def riven(ctx):
 
 @bot.command(brief="Names are hard.", aliases=['names', 'roster'])
 async def whois(ctx, name=''):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
     names = db['names']
 
     if not name:
