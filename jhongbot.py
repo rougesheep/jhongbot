@@ -8,6 +8,8 @@ from pymongo import MongoClient
 
 import logging
 
+historyEnable = False
+
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s: %(levelname)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M',
@@ -68,12 +70,13 @@ async def on_ready():
 
 @bot.listen('on_message')
 async def history(message):
-    if message.author.id == bot.user.id:
-        return
-    
-    history = db['history']
-    record = { "user": message.author.name, "message": message.content, "timestamp": message.created_at }
-    history.insert(record)
+    if historyEnable:
+        if message.author.id == bot.user.id:
+            return
+        
+        history = db['history']
+        record = { "user": message.author.name, "message": message.content, "timestamp": message.created_at }
+        history.insert(record)
 
 @bot.command(hidden=True)
 async def hello(ctx):
