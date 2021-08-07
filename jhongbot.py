@@ -90,6 +90,8 @@ async def wish(ctx, msg: str):
         wishes = json.load(f)
     with open('data/aliases.json') as f:
         aliases = json.load(f)
+    
+    logger.info(msg)
 
     wish = ' '.join(msg)
     if wish in aliases:
