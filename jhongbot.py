@@ -20,8 +20,6 @@ logger = logging.getLogger('jhongbot')
 
 with open('config.json') as f:
     config = json.load(f)
-with open('data/abuse.json') as f:
-    abuse = json.load(f)
 
 bad_reactions = [
     '\U0001F44E',
