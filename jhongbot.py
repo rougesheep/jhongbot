@@ -91,7 +91,6 @@ async def wish(ctx, *msg: str):
     with open('data/aliases.json') as f:
         aliases = json.load(f)
 
-    global bad_reactions
     wish = ' '.join(msg)
     if wish in aliases:
         wish = aliases[wish]
@@ -105,7 +104,7 @@ async def wish(ctx, *msg: str):
         embed.set_footer(text='https://idleanimation.com/last-wish-plates')
         await ctx.send(embed=embed)
     else:
-        await ctx.message.add_reaction(random.choice(bad_reactions))
+        await ctx.send("I don't know what you mean")
 
 @bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
