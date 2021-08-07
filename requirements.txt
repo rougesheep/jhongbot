@@ -1,2 +1,4 @@
 discord.py
 requests
+pymongo~=3.4.0
+discord-py-slash-command

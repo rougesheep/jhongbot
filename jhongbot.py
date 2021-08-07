@@ -1,11 +1,15 @@
 import discord
 from discord.ext import commands
+from discord_slash import SlashCommand
 import json
 import requests
 import random
 from datetime import datetime
+from pymongo import MongoClient
 
 import logging
+
+historyEnable = False
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s: %(levelname)s: %(message)s',
@@ -17,8 +21,6 @@ logger = logging.getLogger('jhongbot')
 
 with open('config.json') as f:
     config = json.load(f)
-with open('data/abuse.json') as f:
-    abuse = json.load(f)
 
 bad_reactions = [
     '\U0001F44E',
@@ -49,43 +51,50 @@ emoji = {
     'question': '\U00002753'
 }
 
-def isToBeAbused(username):
-    return username in config['abuseList']
-
-def getAbuse(username):
-    return random.choice(abuse).format(username)
+# initialise DB connection
+client = MongoClient(config['database'])
+db = client['jhongbot']
 
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
+
+guild_ids = config['guilds']
+slash = SlashCommand(bot, sync_commands=True)
 
 @bot.event
 async def on_ready():
     logger.info('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
 
+@bot.listen('on_message')
+async def history(message):
+    if historyEnable:
+        if message.author.id == bot.user.id:
+            return
+        
+        history = db['history']
+        record = { "user": message.author.name, "message": message.content, "timestamp": message.created_at }
+        history.insert(record)
+
 @bot.command(hidden=True)
 async def hello(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    if (isToBeAbused(str(ctx.author))):
-        message = getAbuse(ctx.author.mention)
-    else:
-        message = 'Hello {}!'.format(ctx.author.mention)
+    message = 'Hello {}!'.format(ctx.author.mention)
     await ctx.send(message)
 
 @bot.command(brief='Link to the GitHub page for this bot.')
 async def jhongbot(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
-async def wish(ctx, *msg: str):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
+#@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
+@slash.slash(name="wish", description="Riven Wishwall solutions", guild_ids=guild_ids)
+async def wish(ctx, msg: str):
     with open('data/wishes.json') as f:
         wishes = json.load(f)
     with open('data/aliases.json') as f:
         aliases = json.load(f)
 
-    global bad_reactions
-    wish = ' '.join(msg)
+    wish = msg.lower()
+
+    logger.info('Received command /wish {}'.format(wish))
+
     if wish in aliases:
         wish = aliases[wish]
     if wish == 'source':
@@ -98,64 +107,18 @@ async def wish(ctx, *msg: str):
         embed.set_footer(text='https://idleanimation.com/last-wish-plates')
         await ctx.send(embed=embed)
     else:
-        await ctx.message.add_reaction(random.choice(bad_reactions))
-
-@bot.command(brief='Guide for the Niobe Labs puzzle from Black Armoury.')
-async def niobe(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    title = 'Niobe Labs puzzle'
-    img = 'https://i.imgur.com/qaPwWnZ.png'
-    embed = discord.Embed(title=title)
-    embed.set_image(url=img)
-    embed.add_field(name='Guide', value='https://gamerant.com/destiny-2-niobe-labs-puzzle-how-to-beat/', inline=False)
-    embed.add_field(name='Infographic', value='https://imgur.com/a/qQjV9zI', inline=False)
-    await ctx.send(embed=embed)
+        await ctx.send("I don't know what you mean")
 
 @bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Dawning Recipes'
     img = 'https://i.imgur.com/nVMYk7R.png'
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command(brief='Menagerie chalice combinations.', aliases=['menagerie'])
-async def chalice(ctx, msg=''):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    title = 'Chalice Combinations'
-    armour_img = 'https://i.imgur.com/6tdW1Fs.png'
-    weapon_img = 'https://i.imgur.com/EzOgjqy.png'
-    armour_embed = discord.Embed(title=title)
-    armour_embed.set_image(url=armour_img)
-    weapon_embed = discord.Embed(title=title)
-    weapon_embed.set_image(url=weapon_img)
-    if msg == 'armour':
-        await ctx.send(embed=armour_embed)
-    elif msg == 'weapons':
-        await ctx.send(embed=weapon_embed)
-    else:
-        await ctx.send('{} weapons or armour?'.format(ctx.author.mention))
-
-@bot.command(brief='Days before season end.')
-async def season(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
-    season_name = 'the Worthy'
-    season_end = datetime(2020, 3, 10, 17, 00)
-    now = datetime.now()
-
-    s = (season_end - now).total_seconds()
-    
-    days, r1 = divmod(s, 86400)
-    hours, r2 = divmod(r1, 3600)
-
-    msg = "Season of {} ends in {:00} days {} hours".format(season_name, int(days), int(hours))
-    await ctx.send(msg)
-
 @bot.command(hidden=True, aliases=['meow', 'nyan', 'cat', '🐈', '🐱'])
 async def poncho(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = random.choice(cat_reactions)
     img = 'https://i.imgur.com/78sGyE2.png'
     embed = discord.Embed(title=title)
@@ -164,67 +127,19 @@ async def poncho(ctx):
 
 @bot.command(brief="DING")
 async def ding(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Ding'
     img = 'https://media.giphy.com/media/32681KwrcXqrFIpI0P/giphy.gif'
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command(brief="Vendor Power Drops", aliases=['engrams'])
-async def vendors(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-    uri = "https://api.vendorengrams.xyz/getVendorDrops"
-    r = requests.get(url=uri)
-    vendors = r.json()
-    vendor_names = {
-        'devrim': 'Devrim Kay',
-        'bray': 'Ana Bray',
-        'asher': 'Asher Mir',
-        'benedict': 'Benedict 99-40',
-        'failsafe': 'Failsafe',
-        'zavala': 'Zavala',
-        'shaxx': 'Shaxx',
-        'banshee': 'Banshee-44',
-        'werner': 'Werner 99-40',
-        'sloane': 'Sloane',
-        'fanboy': 'Brother Vance',
-        'saladin': 'Lord Saladin'
-    }
-    good = []
-    bad = []
-    unknown = []
-    for vendor in vendors:
-        if vendor['display'] == '1':
-            if vendor['drop'] == '2':
-                good.append(vendor_names[vendor['shorthand']])
-            elif vendor['drop'] == '1':
-                bad.append(vendor_names[vendor['shorthand']])
-            else:
-                unknown.append(vendor_names[vendor['shorthand']])
-    
-    title = 'Vendor Engrams'
-    embed = discord.Embed(title=title)
-    if len(good) > 0:
-        embed.add_field(name='High', value="\n".join(good), inline=True)
-    if len(bad) > 0:
-        embed.add_field(name='Low', value="\n".join(bad), inline=True)
-    if len(unknown) > 0:
-        embed.add_field(name='Unknown', value="\n".join(unknown), inline=True)
-    embed.set_footer(text='https://vendorengrams.xyz/')
-    await ctx.send(embed=embed)
-
 @bot.command(brief="Wheel of Fortune. But for raids.")
 async def raid(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     raids = [
-        'Leviathan',
-        'Eater of Worlds',
-        'Spire of Stars',
         'Last Wish',
-        'Scourge of the Past',
-        'Crown of Sorrow',
-        'Garden of Salvation'
+        'Garden of Salvation',
+        'Deep Stone Crypt',
+        'Vault of Glass'
     ]
 
     raid_lines = [
@@ -240,43 +155,39 @@ async def raid(ctx):
 
 @bot.command(brief="Callouts for symbols/positions in the Riven fight.", aliases=['callouts', 'symbols'])
 async def riven(ctx):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
     title = 'Riven Callouts'
     img = 'https://i.imgur.com/Nxr4AO9.png'
     embed = discord.Embed(title=title)
     embed.set_image(url=img)
     await ctx.send(embed=embed)
 
-@bot.command(brief="Names are hard.", aliases=['name', 'roster'])
+@bot.command(brief="Names are hard.", aliases=['names', 'roster'])
 async def whois(ctx, name=''):
-    logger.info('{} - {}'.format(ctx.author, ctx.message.content))
-
-    with open('data/names.json') as f:
-        names = json.load(f)
+    names = db['names']
 
     if not name:
         title='People'
         embed = discord.Embed(title=title)
-        for person in names:
+        for person in names.find({}).sort("steam_lower"):
             embed.add_field(name=person['steam'], value=person['name'])
         await ctx.send(embed=embed)
     else:
-        found = False
-        for person in names:
-            if name.lower() == person['name'].lower():
-                found = True
-                await ctx.send("{} is {}".format(person['name'], person['steam']))
-                exit
-            elif name.lower() == person['steam'].lower():
-                found = True
-                await ctx.send("{} is {}".format(person['steam'], person['name']))
-                exit
-        if not found:
+        name=name.lower()
+        match = []
+        for person in names.find({ "$or": [ { 'name_lower': name}, { 'steam_lower': name }]}):
+            match.append(person)
+        if not match:
             fail_lines = [
                 "I don't know",
                 "Never heard of them",
                 "I only know about important people"
             ]
             await ctx.send(random.choice(fail_lines))
+        else:
+            title='People'
+            embed=discord.Embed(title=title)
+            for person in match:
+                embed.add_field(name=person['steam'], value=person['name'])
+            await ctx.send(embed=embed)
 
 bot.run(config['token'])
