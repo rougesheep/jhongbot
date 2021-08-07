@@ -90,10 +90,11 @@ async def wish(ctx, msg: str):
         wishes = json.load(f)
     with open('data/aliases.json') as f:
         aliases = json.load(f)
-    
-    logger.info('Received message '.format(msg))
 
-    wish = ' '.join(msg)
+    wish = msg.lower()
+
+    logger.info('Received command /wish {}'.format(wish))
+
     if wish in aliases:
         wish = aliases[wish]
     if wish == 'source':
