@@ -91,7 +91,7 @@ async def wish(ctx, msg: str):
     with open('data/aliases.json') as f:
         aliases = json.load(f)
     
-    logger.info(msg)
+    logger.info('Received message '.format(msg))
 
     wish = ' '.join(msg)
     if wish in aliases:
