@@ -133,6 +133,7 @@ async def raid(ctx):
     raids = [
         'Last Wish',
         'Garden of Salvation',
+        'Deep Stone Crypt',
         'Vault of Glass'
     ]
 
