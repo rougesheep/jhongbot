@@ -57,6 +57,9 @@ db = client['jhongbot']
 
 bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 
+guild_ids = config['guilds']
+slash = SlashCommand(bot, sync_commands=True)
+
 @bot.event
 async def on_ready():
     logger.info('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
@@ -80,7 +83,8 @@ async def hello(ctx):
 async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
+#@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
+@slash.slash(name="wish", description="Riven Wishwall solutions", guild_ids=guild_ids)
 async def wish(ctx, *msg: str):
     with open('data/wishes.json') as f:
         wishes = json.load(f)
