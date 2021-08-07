@@ -131,13 +131,9 @@ async def ding(ctx):
 @bot.command(brief="Wheel of Fortune. But for raids.")
 async def raid(ctx):
     raids = [
-        'Leviathan',
-        'Eater of Worlds',
-        'Spire of Stars',
         'Last Wish',
-        'Scourge of the Past',
-        'Crown of Sorrow',
-        'Garden of Salvation'
+        'Garden of Salvation',
+        'Vault of Glass'
     ]
 
     raid_lines = [
