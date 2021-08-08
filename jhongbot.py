@@ -82,7 +82,7 @@ def check_wish(msg: str):
         embed.set_image(url=wishes[wish]['image_url'])
         embed.set_footer(text="https://idleanimation.com/last-wish-plates")
         return embed
-    else
+    else:
         response = "I don't know what you mean"
         return response
 
@@ -109,10 +109,10 @@ async def hello(ctx):
 async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
+@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', name="wish", aliases=['wishwall'])
 async def com_wish(ctx, msg: str):
     response = check_wish(msg)
-    if type(response) == str
+    if type(response) == str:
         await ctx.send(response)
     else:
         await ctx.send(embed=response)
@@ -120,7 +120,7 @@ async def com_wish(ctx, msg: str):
 @slash.slash(name="wish", description="Riven Wishwall solutions")
 async def slash_wish(ctx, msg: str):
     response = check_wish(msg)
-    if type(response) == str
+    if type(response) == str:
         await ctx.send(response)
     else:
         await ctx.send(embed=response)
