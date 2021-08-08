@@ -60,6 +60,32 @@ bot = commands.Bot(command_prefix='?', description='A pretty useless bot')
 guild_ids = config['guilds']
 slash = SlashCommand(bot, sync_commands=True)
 
+def check_wish(msg: str):
+    with open('data/wishes.json') as f:
+        wishes = json.load(f)
+    with open('data/aliases.json') as f:
+        aliases = json.load(f)
+
+    wish = msg.lower()
+
+    logger.info('Received command /wish {}'.format(wish))
+
+    if wish in aliases:
+        wish = aliases[wish]
+    if wish == 'source':
+        response = "Shamelessly stolen from https://idleanimation.com/last-wish-plates"
+        return response
+    elif wish in wishes:
+        title = "YOU WISH {}".format(wishes[wish]['message'])
+        description = wishes[wish]['description']
+        embed = discord.Embed(title=title, description=description)
+        embed.set_image(url=wishes[wish]['image_url'])
+        embed.set_footer(text="https://idleanimation.com/last-wish-plates")
+        return embed
+    else
+        response = "I don't know what you mean"
+        return response
+
 @bot.event
 async def on_ready():
     logger.info('Logged in as {} id {}'.format(bot.user.name, bot.user.id))
@@ -83,31 +109,21 @@ async def hello(ctx):
 async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
-#@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
-@slash.slash(name="wish", description="Riven Wishwall solutions", guild_ids=guild_ids)
-async def wish(ctx, msg: str):
-    with open('data/wishes.json') as f:
-        wishes = json.load(f)
-    with open('data/aliases.json') as f:
-        aliases = json.load(f)
-
-    wish = msg.lower()
-
-    logger.info('Received command /wish {}'.format(wish))
-
-    if wish in aliases:
-        wish = aliases[wish]
-    if wish == 'source':
-        await ctx.send('Shamelessly stolen from https://idleanimation.com/last-wish-plates')
-    elif wish in wishes:
-        title = 'YOU WISH {}'.format(wishes[wish]['message'])
-        description = wishes[wish]['description']
-        embed = discord.Embed(title=title, description=description)
-        embed.set_image(url=wishes[wish]['image_url'])
-        embed.set_footer(text='https://idleanimation.com/last-wish-plates')
-        await ctx.send(embed=embed)
+@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
+async def com_wish(ctx, msg: str):
+    response = check_wish(msg)
+    if type(response) == str
+        await ctx.send(response)
     else:
-        await ctx.send("I don't know what you mean")
+        await ctx.send(embed=response)
+
+@slash.slash(name="wish", description="Riven Wishwall solutions")
+async def slash_wish(ctx, msg: str):
+    response = check_wish(msg)
+    if type(response) == str
+        await ctx.send(response)
+    else:
+        await ctx.send(embed=response)
 
 @bot.command(brief='Dawning oven recipes.')
 async def dawning(ctx):
