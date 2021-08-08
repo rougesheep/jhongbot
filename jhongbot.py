@@ -84,7 +84,7 @@ async def jhongbot(ctx):
     await ctx.send('GitHub repo: https://github.com/rougesheep/jhongbot')
 
 #@bot.command(brief='Wish-wall solutions for the Last Wish Raid.', aliases=['wishwall'])
-@slash.slash(name="wish", description="Riven Wishwall solutions", guild_ids=guild_ids)
+@slash.slash(name="wish", description="Riven Wishwall solutions")
 async def wish(ctx, msg: str):
     with open('data/wishes.json') as f:
         wishes = json.load(f)
